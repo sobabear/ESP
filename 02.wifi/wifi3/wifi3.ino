@@ -17,17 +17,23 @@ int i = 0;
 void setup() {
   Serial.begin(115200);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  
   Serial.print("connecting to Wi-fi");
+  
   while (WiFi.status() != WL_CONNECTED)
   {
     Serial.print(".");
     delay(300);
   }
+  
   Serial.println();
   Serial.print("conneted with IP: ");
+  
   Serial.println(WiFi.localIP());
   Serial.println();
+  
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+  
   Firebase.reconnectWiFi(true);
     //Set database read timeout to 1 minute (max 15 minutes)
   Firebase.setReadTimeout(firebaseData, 1000 * 60);
