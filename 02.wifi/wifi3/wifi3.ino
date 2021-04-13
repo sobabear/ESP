@@ -10,6 +10,7 @@
 FirebaseData firebaseData;
 FirebaseAuth mAuth;
 FirebaseJson json;
+FirebaseJson json2;
 FirebaseConfig mConfig;
 
 int i = 0;
@@ -51,6 +52,11 @@ void setup() {
   
   Serial.println("------------------------------------");
   Serial.println("Connected...");
+  json.set("/hello", "i am yongjun");
+  json.set("/hello2", "hmmm");
+  json2.set("/wow3/aha/hello","hiyo");
+  Firebase.updateNode(firebaseData,"/wow2",json);
+  Firebase.updateNode(firebaseData, "/new", json2);
 }
 
 void loop() {
