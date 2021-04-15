@@ -11,7 +11,7 @@ void setup() {
 
 void loop() {
 
-  // put your main code here, to run repeatedly:
+  // 풀업 저항이라 
   if (digitalRead(TAREBTN) == HIGH) {
     Serial.println("TARE 눌렸쩡 ");
   } else {

@@ -1,12 +1,18 @@
 #include "HX711.h"
 
+#define calibration_factor 529.0 // 로드셀 스케일 값 선언
+//#define calibration_factor 229.0 
+#define DOUT  5 //엠프 데이터 아웃 핀 넘버 선언
+#define CLK  4  //엠프 클락 핀 넘버 
+#define TAREBTN 2
+
 // HX711.DOUT	- pin #A1
 // HX711.PD_SCK	- pin #A0
 
-HX711 scale(A1, A0);		// parameter "gain" is ommited; the default value 128 is used by the library
+HX711 scale(DOUT, CLK);		// parameter "gain" is ommited; the default value 128 is used by the library
 
 void setup() {
-  Serial.begin(38400);
+  Serial.begin(9600);
   Serial.println("HX711 Demo");
 
   Serial.println("Before setting up the scale:");
@@ -23,7 +29,7 @@ void setup() {
   Serial.println(scale.get_units(5), 1);	// print the average of 5 readings from the ADC minus tare weight (not set) divided 
 						// by the SCALE parameter (not set yet)  
 
-  scale.set_scale(2280.f);                      // this value is obtained by calibrating the scale with known weights; see the README for details
+  scale.set_scale(calibration_factor);                      // this value is obtained by calibrating the scale with known weights; see the README for details
   scale.tare();				        // reset the scale to 0
 
   Serial.println("After setting up the scale:");

@@ -4,10 +4,10 @@
 */
 //
 //#include "HX711.h"
-#define calibration_factor 205.8 //224.75 // 테스트 해가면서 조절한 초기 조정값
+#define calibration_factor 592000.8 //224.75 // 테스트 해가면서 조절한 초기 조정값
 #define DOUT 5
 #define CLK 4
-#define TAREBTN 3
+#define TAREBTN 2
 #define LEN 5
 #define DELAY_TIME 1
 #define MAX_WEIGHT 6000000
@@ -16,8 +16,10 @@ bool scaleflag = false;
 int i;
 float scalelist[LEN];
 float tarevalue;
+
 bool weightflag;
 int output_weight;
+
 boolean tare_flag = false;
 float zero_data = 0;
 HX711 scale(DOUT, CLK);
@@ -45,7 +47,7 @@ void custom_tare() {
       }
       ave = (float) (sum) / LEN; //20개의 값의 평균값
       for (int j = 0; j < LEN; j++) {
-        if (abs(custom_scalelist[j] - ave) < 1300.0) {
+        if (abs(custom_scalelist[j] - ave) < 1500.0) {
           changeflag = true;
         } else {
           changeflag = false;
@@ -102,7 +104,7 @@ void loop() {
   char text = 't';
   char serialcmd = Serial.read();
 
-  if (digitalRead(TAREBTN) == LOW || text == serialcmd) { //통신으로 tare명령 제어.
+  if (digitalRead(TAREBTN) == HIGH || text == serialcmd) { //통신으로 tare명령 제어.
     Serial.println("TARE");
     tare_flag = false;
     custom_tare();
