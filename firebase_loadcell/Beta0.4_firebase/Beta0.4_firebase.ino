@@ -1,15 +1,34 @@
 /**
  *
- * HX711 library for Arduino - example file
- * https://github.com/bogde/HX711
+ * https://github.com/stareta1202/ESP
  *
  * MIT License
- * (c) 2018 Bogdan Necula
+ * (c) 2021 Yongjun Lee
  *
 **/
+
 #include "HX711.h"
+#include <WiFi.h>
+#include <FirebaseESP32.h>
+
+#define WIFI_SSID "JYGLAB_2.4G"
+#define WIFI_PASSWORD "18000658"
+
+//개인 테스트용
+//#define FIREBASE_HOST "https://ygfirebasetest-default-rtdb.firebaseio.com/"
+//#define FIREBASE_AUTH "QKxCxRK3tbuKgXFwzbIddadtjx61L3BaqCgKuDok"
+// 테스트용
+#define FIREBASE_HOST "https://jyg-custom.firebaseio.com"
+#define FIREBASE_AUTH "8thrZQjcL0Cib0Yj3b3ysLVsbBpRrCa4tgSSKSXg"
+
 #define MAX_WEIGHT 6000000
 
+//Firebase and Wifi
+FirebaseData firebaseData;
+FirebaseAuth mAuth;
+FirebaseJson json;
+FirebaseConfig mConfig;
+String mRef = "/automate_factory/test/pi1/scale";
 
 
 // HX711 circuit wiring
@@ -28,7 +47,9 @@ HX711 scale;
 
 void setup() {
   Serial.begin(9600);
-  preparing();
+  setup_wifi();
+  setup_firebase();
+  setup_Scale();
   jyg_tare();
 }
 
@@ -47,8 +68,53 @@ void loop() {
 
 
 }
+// --------------------------------------------------------------
+// --------------------- custom functions -----------------------
+// --------------------------------------------------------------  
 
-// --------------------- custom functions------------------------  
+// ========================set up================================
+void setup_wifi() {
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  Serial.print("connectiong to WiFi");
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    Serial.print(".");
+    delay(300);
+  }
+  Serial.println();
+  Serial.print("Coneected with IP: ");
+  Serial.println(WiFi.localIP());
+  
+}
+
+void setup_firebase() {
+  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+  Firebase.reconnectWiFi(true);
+  // Set database read timeout to 1 minute (max 15 minutes)
+  Firebase.setReadTimeout(firebaseData, 1000 * 60);
+  //Size and its write timeout e.g. tiny(1s), small (10s), medium (30s) and large (60s).
+  Firebase.setwriteSizeLimit(firebaseData, "tiny");
+//  write_firebase_temp(1);  
+}
+
+// ======================== write ===============================
+
+void write_firebase_temp(int weight) {
+  int count = 0;
+  for(;;) {
+    json.set("/value", count);
+    Firebase.updateNode(firebaseData, mRef, json);
+    count++;
+    delay(500);
+  }
+}
+void write_firebase(int weight) {
+  json.set("/value", weight);
+  Firebase.updateNode(firebaseData, mRef, json);
+  delay(10);
+}
+
+
 void check_valid(float result) {
   //시리얼 통신 제어는 추후에 구현 
   if (result < -500) {
@@ -87,6 +153,7 @@ void check_valid(float result) {
               weightflag = true;
               // 변경된 무게를 무시하기 위해 따로 저장해두고 무게 측정 flag 초기화 전까지는 이 무게를 계속 출력
               Serial.print("a");Serial.print(output_weight); Serial.print("g");Serial.println();
+              write_firebase(output_weight);
             } else { // 이미 한번 무게가 올라간 상태에서 계속 해서 무게가 측정된 상
               Serial.print("a"); Serial.print(output_weight); Serial.print("g");Serial.println();
             }
@@ -150,11 +217,6 @@ float jyg_get_units() {
   return data;
 }
 
-void taring() {
-  
-}
-
-
 
 
 // ----------------------- 예제에 있던 애들  ㅇ ----------------------
@@ -166,52 +228,28 @@ void ft_print() {
   Serial.print("\t| jygvalue is :\t");
   Serial.println(jyg_get_units(), 0);
 
-
-            // put the ADC in sleep mode
   delay(1000);  
 }
 
-void preparing() {
-    Serial.println("HX711 Demo");
-
-  Serial.println("Initializing the scale");
-
+void setup_Scale() {
+  Serial.println("HX711 Demo");Serial.println("Initializing the scale");
   scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
 
   Serial.println("Before setting up the scale:");
-  Serial.print("read: \t\t");
-  Serial.println(scale.read());      // print a raw reading from the ADC
-
-  Serial.print("read average: \t\t");
-  Serial.println(scale.read_average(20));   // print the average of 20 readings from the ADC
-
-  Serial.print("get value: \t\t");
-  Serial.println(scale.get_value(5));   // print the average of 5 readings from the ADC minus the tare weight (not set yet)
-
-  Serial.print("get units: \t\t");
-  Serial.println(scale.get_units(5), 1);  // print the average of 5 readings from the ADC minus tare weight (not set) divided
-            // by the SCALE parameter (not set yet)
-
-  scale.set_scale(cal);                      // this value is obtained by calibrating the scale with known weights; see the README for details
+  Serial.print("read: \t\t");Serial.println(scale.read());      // print a raw reading from the ADC
+  Serial.print("read average: \t\t");Serial.println(scale.read_average(20));   // print the average of 20 readings from the ADC
+  Serial.print("get value: \t\t");Serial.println(scale.get_value(5));   // print the average of 5 readings from the ADC minus the tare weight (not set yet)
+  Serial.print("get units: \t\t");Serial.println(scale.get_units(5), 1);  // print the average of 5 readings from the ADC minus tare weight (not set) divided// by the SCALE parameter (not set yet)
+  scale.set_scale(cal); // this value is obtained by calibrating the scale with known weights; see the README for details
   scale.tare();               // reset the scale to 0
 
   Serial.println("After setting up the scale:");
-
-  Serial.print("read: \t\t");
-  Serial.println(scale.read());                 // print a raw reading from the ADC
-
-  Serial.print("read average: \t\t");
-  Serial.println(scale.read_average(20));       // print the average of 20 readings from the ADC
-
-  Serial.print("get value: \t\t");
-  Serial.println(scale.get_value(5));   // print the average of 5 readings from the ADC minus the tare weight, set with tare()
-
-  Serial.print("get units: \t\t");
-  Serial.println(scale.get_units(5), 1);        // print the average of 5 readings from the ADC minus tare weight, divided
+  Serial.print("read: \t\t");Serial.println(scale.read());                 // print a raw reading from the ADC
+  Serial.print("read average: \t\t");Serial.println(scale.read_average(20));       // print the average of 20 readings from the ADC
+  Serial.print("get value: \t\t");Serial.println(scale.get_value(5));   // print the average of 5 readings from the ADC minus the tare weight, set with tare()
+  Serial.print("get units: \t\t");Serial.println(scale.get_units(5), 1);        // print the average of 5 readings from the ADC minus tare weight, divided
             // by the SCALE parameter set with set_scale
-
   float tareindex;
-
   for (int ti = 0; ti < 20; ti++) {
     tareindex = scale.get_units(1);
   }
