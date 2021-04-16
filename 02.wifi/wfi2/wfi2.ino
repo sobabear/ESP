@@ -15,7 +15,7 @@ FirebaseConfig mConfig;
 int i = 0;
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(115200); 
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("connecting to Wi-fi");
   while (WiFi.status() != WL_CONNECTED)
@@ -34,12 +34,6 @@ void setup() {
   //tiny, small, medium, large and unlimited.
   //Size and its write timeout e.g. tiny (1s), small (10s), medium (30s) and large (60s).
   Firebase.setwriteSizeLimit(firebaseData, "tiny");
-  /*
-  This option allows get and delete functions (PUT and DELETE HTTP requests) works for device connected behind the
-  Firewall that allows only GET and POST requests.
-  
-  Firebase.enableClassicRequest(firebaseData, true);
-  */
 
   //String path = "/data";
   
