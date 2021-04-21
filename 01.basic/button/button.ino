@@ -2,7 +2,7 @@
 
 
 void setup() {
-      Serial.begin(115200); // 시리얼 포트 오픈
+  Serial.begin(115200); // 시리얼 포트 오픈
   Serial.println("being");
   pinMode(TAREBTN, INPUT);
   // put your setup code here, to run once:
