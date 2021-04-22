@@ -4,3 +4,5 @@ cmake_minimum_required(VERSION 3.5)
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(blink)
+idf_component_register( INCLUDE_DIRS "ArduinoJson" "ArduinoJson/src" )
+

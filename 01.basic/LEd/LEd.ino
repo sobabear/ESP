@@ -1,3 +1,4 @@
+#incldue 
 #define LED 2 // ESP 보드에 내장된 LED 핀은 2
  int i = 0;
 
