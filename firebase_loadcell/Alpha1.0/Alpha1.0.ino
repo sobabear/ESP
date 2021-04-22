@@ -24,11 +24,11 @@
 
 
 //개인 테스트용
-#define FIREBASE_HOST "https://ygfirebasetest-default-rtdb.firebaseio.com/"
-#define FIREBASE_AUTH "QKxCxRK3tbuKgXFwzbIddadtjx61L3BaqCgKuDok"
+//#define FIREBASE_HOST "https://ygfirebasetest-default-rtdb.firebaseio.com/"
+//#define FIREBASE_AUTH "QKxCxRK3tbuKgXFwzbIddadtjx61L3BaqCgKuDok"
 //기업 테스트용
-// #define FIREBASE_HOST "https://jyg-custom.firebaseio.com"
-// #define FIREBASE_AUTH "8thrZQjcL0Cib0Yj3b3ysLVsbBpRrCa4tgSSKSXg"
+ #define FIREBASE_HOST "https://jyg-custom.firebaseio.com"
+ #define FIREBASE_AUTH "8thrZQjcL0Cib0Yj3b3ysLVsbBpRrCa4tgSSKSXg"
 
 
 
@@ -36,9 +36,11 @@
 FirebaseData firebaseData;
 FirebaseAuth mAuth;
 FirebaseJson json;
+FirebaseJsonArray jsonArray;
 
 FirebaseConfig mConfig;
 String mRef = "/automate_factory/test/pi1/scale";
+String mDummyRef = "/automate_factory/test/pi1";
 
 // Core
 TaskHandle_t async;
@@ -56,6 +58,7 @@ float offset, zero_data = 0;
 boolean tare_flag = false, scaleflag = false, weightflag;
 float scalelist[LEN];
 int i, output_weight;
+int scale_output_weight = 0;
 HX711 scale;
 
 long int raw_time;
@@ -142,12 +145,27 @@ void temp_write_firebase(int weight) {
 }
 
 void write_firebase(int weight) {
+  Firebase.setTimestamp(firebaseData, mDummyRef + "/rawtimestamp");
+  String mTime = unixTimeToHumanReadable(firebaseData.intData());
 
+  json.set("/value",weight);
+  json.set("/timestamp",mTime);
+  Firebase.updateNode(firebaseData, mRef, json);
+  delay(8);
+}
+void write_scale_firebase(int weight) {
+
+  json.set("/value", weight);
+  Firebase.updateNode(firebaseData, mRef, json);
+//  json.set("/value", 400);
+//  Firebase.updateNode(firebaseData, mRef, json);
+  delay(8);
+}
+
+void write_timestamp_firebase() {
   Firebase.setTimestamp(firebaseData, mRef + "/rawtimestamp");
   String time = unixTimeToHumanReadable(firebaseData.intData());
-
   json.set("/timestamp", time);
-  json.set("/value", weight);
   Firebase.updateNode(firebaseData, mRef, json);
   delay(8);
 }
