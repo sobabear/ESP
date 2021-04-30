@@ -53,7 +53,7 @@ const int LOADCELL_SCK_PIN = 4;
 const int TAREBTN = 2;
 const int LEN = 5;
 const int DELAY_TIME = 1;
-float cal = 526.7;
+float cal = 196.7;
 float offset, zero_data = 0;
 boolean tare_flag = false, scaleflag = false, weightflag;
 float scalelist[LEN];

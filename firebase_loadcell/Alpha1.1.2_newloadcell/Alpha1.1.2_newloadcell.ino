@@ -53,7 +53,7 @@ const int LOADCELL_SCK_PIN = 4;
 const int TAREBTN = 2;
 const int LEN = 5;
 const int DELAY_TIME = 1;
-float cal = 526.7;
+float cal = 430.7;
 float offset, zero_data = 0;
 boolean tare_flag = false, scaleflag = false, weightflag;
 float scalelist[LEN];
@@ -109,6 +109,7 @@ void asyncThread(void *param) {
   while(1) {
      float scale_result = jyg_get_units();
      check_valid(scale_result);
+     delay(200);
   }
 }
 
