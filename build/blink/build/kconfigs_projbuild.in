@@ -1,5 +1,0 @@
-source "/Users/yongjunlee/Documents/esp-idf/components/app_update/Kconfig.projbuild"
-source "/Users/yongjunlee/Documents/esp-idf/components/bootloader/Kconfig.projbuild"
-source "/Users/yongjunlee/Documents/esp-idf/components/esptool_py/Kconfig.projbuild"
-source "/Users/yongjunlee/Documents/esp-idf/components/partition_table/Kconfig.projbuild"
-source "/Users/yongjunlee/Desktop/ESP/build/blink/main/Kconfig.projbuild"

@@ -1,9 +1,0 @@
-{
-  "C_Cpp.intelliSenseEngine": "Tag Parser",
-  "idf.flashType": "UART",
-  "idf.port": "/dev/cu.usbserial-0001",
-  "files.associations": {
-    "freertos.h": "c",
-    "task.h": "c"
-  }
-}

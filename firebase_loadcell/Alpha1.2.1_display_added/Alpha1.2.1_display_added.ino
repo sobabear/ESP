@@ -456,10 +456,10 @@ String unixTimeToHumanReadable(long int timestamp)
 }
 
 void display_print_int(int weight) {
-  lcd.print(weight, 0);
+  lcd.print(weight);
   delay(1);
 }
 void display_print_float(float weight) {
-  lcd.print(weight, 1);
+  lcd.print(weight);
   delay(1);
 }
