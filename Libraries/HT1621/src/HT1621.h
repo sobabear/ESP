@@ -62,6 +62,8 @@ public:
 	void display();
 	void noDisplay();
     
+    void printErr(char number);
+    
     void printErr0();
     void printErr1();
     void printErr3();

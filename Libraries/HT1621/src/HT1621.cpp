@@ -256,7 +256,6 @@ void HT1621::print(long num, char*flags,int precision){
 		}
 
 		update();
-
 }
 
 
@@ -305,6 +304,75 @@ void HT1621::setdecimalseparator(int decimaldigits) {
 
 }
 
+void HT1621::printErr(char number) {
+    _buffer[0] = 0x1F;
+    _buffer[1] = 0x06;
+    _buffer[2] = 0x06;
+    char * flags = "%6li";
+
+    char localbuffer[1];
+    snprintf(localbuffer, 1, flags, number);
+    char tempNum = number + 48;
+    
+    if (tempNum == '0') {
+        _buffer[4] = 0x7D;
+    } else if (tempNum == '1') {
+        _buffer[4] = 0x60;
+
+    } else if (tempNum == '2') {
+        _buffer[4] = 0x3e;
+
+    } else if (tempNum == '3') {
+        _buffer[4] = 0x7a;
+
+    } else if (tempNum == '4') {
+        _buffer[4] = 0x63;
+
+    } else if (tempNum == '5') {
+        _buffer[4] = 0x5b;
+
+    } else if (tempNum == '6') {
+        _buffer[4] = 0x5f;
+
+    } else if (tempNum == '7') {
+        _buffer[4] = 0x70;
+
+    } else if (tempNum == '8') {
+        _buffer[4] = 0x7f;
+
+    } else if (tempNum == '9') {
+        _buffer[4] = 0x7b;
+
+    } else {
+        _buffer[4] = 0x02;
+
+    }
+//    switch (tempNum) {
+//        case '0':
+//            _buffer[4] = 0x7D;
+//        case '1':
+//            _buffer[4] = 0x60;
+//        case '2':
+//            _buffer[4] = 0x3e;
+//        case '3':
+//            _buffer[4] = 0x7a;
+//        case '4':
+//            _buffer[4] = 0x63;
+//        case '5':
+//            _buffer[4] = 0x5b;
+//        case '6':
+//            _buffer[4] = 0x5f;
+//        case '7':
+//            _buffer[4] = 0x70;
+//        case '8':
+//            _buffer[4] = 0x7f;
+//        case '9':
+//            _buffer[4] = 0x7b;
+//        default:
+//            break;
+//    }
+    update();
+}
 void HT1621::printErr0() {
     _buffer[0] = 0x1F;
     _buffer[1] = 0x06;
